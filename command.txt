@@ -1,0 +1,66 @@
+
+command:
+
+terminal 1:
+
+roscore
+
+terminal 2:
+
+use ros param (for clock)
+
+rosbag play xxx.bag --pause (so that the ros noetic can propagate the topic, if not run with --pause the lidar_augmentation_cpp_ws package might not detect the topics when launch) 
+
+Eg: rosbag play unitree_outdoor_tt.bag --clock --pause
+
+
+terminal 3:
+
+roslaunch lidar_augmentation rosbag_augmentation.launch publish_statistics:=true ( or false if no need for statistics)
+
+terminal 4:
+
+After modifying the topics' inputs named in the SLAM parameters files, launch them with their launch files.
+
+terminal 5:
+
+python3 lidar_augmentation_visualizer.py
+
+terminal 6:
+
+python3 lidar_bev_visualizer.py ( it may have some small delay before start seeing the output images, sometimes matplolib not responding box can be display forcing you to quit or wait, just click wait to wait for the application to process)
+
+
+Note: at this step, you can get back into the rosbag play terminal and press the computer space bar to start playing the bag.
+
+
+Note:
+in another terminal make sure to run the gnss_pose converter(for outdoor data/ indoor not need this) and the pointcloud2tolivox customs converter package(for livox series) so that Fast_lio families SLAM can process it( for ouster this converter is not needed)
+
+The procedure to use the gnss_pose and the pointcloud2tolivox package is describe on the multi_lidar_dataset github we create last time(https://github.com/mawuto/multi_modal_lidar_dataset), especially the processing and reproductible step (docs/pipelines/README.md).
+
+"chatgpt go through this repo link to see how It is done and describe) to record the metrics and use evo_ape to get the metrics. 
+
+You can go through the complete (https://github.com/mawuto/multi_modal_lidar_dataset), there might be there some things we may want to reproduce here if necessary.
+
+terminal:
+
+rosrun rqt_graph rqt_graph.(can be use to view the topics connections)
+
+user have to make sure all these are in place before press the "space" bar to start playing the rosbag.
+
+
+Note :
+ make sure to reserve some place where we can show the rqt image for when we use ouster and when we use livox series to show the differences.
+place we can show image of the results, place we can show two dashboards differents image examples.
+
+a place for the later citation
+
+
+
+
+
+
+rosbag play unitree_outdoor_tt.bag --clock --pause
+
+

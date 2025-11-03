@@ -1,0 +1,99 @@
+mawuto@mawuto-pc:~/lidar_augmentation_cpp_ws/src/lidar_augmentation/scripts/tools$ python3 lidar_augmentation_statistics_subscriber.py
+[INFO] [1753270978.483379]: LiDAR Statistics Subscriber initialized
+[INFO] [1753270978.484056]: Buffer size: 1000 points per sensor
+[INFO] [1753270978.484628]: Waiting for statistics messages...
+ Waiting for statistics data...
+ Waiting for statistics data...
+ Waiting for statistics data...
+ Waiting for statistics data...
+ Waiting for statistics data...
+ Waiting for statistics data...
+ Waiting for statistics data...
+ Waiting for statistics data...
+
+================================================================================
+ REAL-TIME LIDAR AUGMENTATION STATISTICS
+================================================================================
+ AUTO_SENSOR_3 (livox_mid360)
+    Points: 19,968 → 15,588 (+21.9%)
+     Processing: 3ms (avg: 3.0ms)
+    Messages: 1 (avg reduction: 21.9%)
+
+ AUTO_SENSOR_1 (livox_avia)
+    Points: 24,000 → 20,547 (+14.4%)
+     Processing: 5ms (avg: 5.0ms)
+    Messages: 1 (avg reduction: 14.4%)
+
+ Total messages: 2
+================================================================================
+
+================================================================================
+ REAL-TIME LIDAR AUGMENTATION STATISTICS
+================================================================================
+ AUTO_SENSOR_3 (livox_mid360)
+    Points: 20,064 → 15,708 (+21.7%)
+     Processing: 2ms (avg: 4.0ms)
+    Messages: 6 (avg reduction: 21.8%)
+
+ AUTO_SENSOR_1 (livox_avia)
+    Points: 24,000 → 20,465 (+14.7%)
+     Processing: 2ms (avg: 3.5ms)
+    Messages: 6 (avg reduction: 14.9%)
+
+ AUTO_SENSOR_2 (ouster)
+    Points: 131,072 → 105,820 (+19.3%)
+     Processing: 21ms (avg: 20.4ms)
+    Messages: 5 (avg reduction: 19.3%)
+
+ Total messages: 17
+================================================================================
+
+================================================================================
+ REAL-TIME LIDAR AUGMENTATION STATISTICS
+================================================================================
+ AUTO_SENSOR_3 (livox_mid360)
+    Points: 19,968 → 15,657 (+21.6%)
+     Processing: 6ms (avg: 4.6ms)
+    Messages: 11 (avg reduction: 21.8%)
+
+ AUTO_SENSOR_1 (livox_avia)
+    Points: 24,000 → 20,401 (+15.0%)
+     Processing: 5ms (avg: 3.2ms)
+    Messages: 11 (avg reduction: 14.9%)
+
+ AUTO_SENSOR_2 (ouster)
+    Points: 131,072 → 105,778 (+19.3%)
+     Processing: 23ms (avg: 21.0ms)
+    Messages: 10 (avg reduction: 19.3%)
+
+ Total messages: 32
+================================================================================
+
+================================================================================
+ REAL-TIME LIDAR AUGMENTATION STATISTICS
+================================================================================
+ AUTO_SENSOR_3 (livox_mid360)
+    Points: 19,968 → 15,636 (+21.7%)
+     Processing: 7ms (avg: 4.5ms)
+    Messages: 16 (avg reduction: 21.8%)
+
+ AUTO_SENSOR_1 (livox_avia)
+    Points: 24,000 → 20,424 (+14.9%)
+     Processing: 2ms (avg: 3.1ms)
+    Messages: 16 (avg reduction: 14.9%)
+
+ AUTO_SENSOR_2 (ouster)
+    Points: 131,072 → 105,756 (+19.3%)
+     Processing: 20ms (avg: 20.7ms)
+    Messages: 15 (avg reduction: 19.3%)
+
+ Total messages: 47
+================================================================================
+[INFO] [1753270984.066070]: ============================================================
+[INFO] [1753270984.068053]:  STATISTICS SUMMARY (Uptime: 5.6s)
+[INFO] [1753270984.069399]:  Total messages: 50 (9.0 msg/s)
+[INFO] [1753270984.070342]:  Errors: 0
+[INFO] [1753270984.071340]:  Active sensors: 3
+
+
+

@@ -1,0 +1,58 @@
+lidar_augmentation/                   # ROOT PACKAGE
+├── CMakeLists.txt                    # 🔧 UPDATED - Support both C++ and Python
+├── package.xml                       # 📋 UPDATED - Add C++ dependencies  
+├── setup.py                          # 🐍 KEEP - For Python tools
+├── 
+├── include/lidar_augmentation/       # 🚀 NEW - C++ High Performance Core
+│   ├── lidar_augmenter_node.h
+│   ├── point_cloud_processor.h
+│   ├── augmentation_methods.h
+│   └── imu_synchronizer.h
+├── 
+├── src/cpp/                         # 🚀 NEW - C++ Implementation (25-30Hz)
+│   ├── lidar_augmenter_node.cpp
+│   ├── lidar_augmenter_node_main.cpp  
+│   ├── point_cloud_processor.cpp
+│   ├── augmentation_methods.cpp
+│   └── imu_synchronizer.cpp
+├── 
+├── src/                             # 🐍 KEEP - Python Source (for tools)
+│   ├── point_cloud_utils.py         # ✅ Keep for tools
+│   ├── imu_synchronizer.py          # ✅ Keep for tools
+│   ├── augmentation_methods.py      # ✅ Keep for tools  
+│   └── visualization.py             # ✅ Keep for analysis
+├── 
+├── scripts/                         # 🐍 KEEP - Your Analysis Tools
+│   ├── lidar_augmenter_node.py      # 🟡 Archive (replaced by C++)
+│   ├── visualize_augmentation.py    # ✅ KEEP - Excellent analysis tool
+│   ├── setup_rviz_config.py         # ✅ KEEP - Configuration tool
+│   └── tools/                       # 🆕 NEW - Organize tools
+│       ├── performance_analyzer.py   # Extract from your visualization
+│       ├── config_generator.py       # Parameter generation
+│       ├── dataset_processor.py      # Batch analysis 
+│       └── results_plotter.py        # Scientific plotting
+├── 
+├── config/                          # 📋 SHARED - Both C++ and Python use
+│   ├── augmentation_params.yaml     # ✅ KEEP - Your excellent configs
+│   └── augmentation_rviz.rviz       # ✅ KEEP - Visualization
+├── 
+├── launch/                         
+│   ├── augmenter_cpp.launch         # 🚀 NEW - C++ high-performance
+│   ├── augment_lidar_live.launch    # 🟡 MODIFY - Use C++ node
+│   ├── visualize_augmentation.launch # ✅ KEEP - Your analysis
+│   └── tools/
+│       ├── performance_comparison.launch # Compare C++ vs Python
+│       └── batch_analysis.launch         # Your analysis tools
+├── 
+├── results/                        # 🆕 NEW - Store your analysis
+│   ├── performance_plots/
+│   ├── statistics/
+│   └── comparisons/
+├── 
+└── tests/                          # Testing both C++ and Python
+    ├── cpp/                        # C++ unit tests
+    └── python/                     # Your analysis validation
+
+
+
+

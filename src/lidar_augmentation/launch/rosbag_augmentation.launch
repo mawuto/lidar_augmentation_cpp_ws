@@ -1,0 +1,54 @@
+<?xml version="1.0"?>
+<launch>
+  <!-- =========== DYNAMIC ROSBAG-COMPATIBLE LIDAR AUGMENTATION =========== -->
+  
+  <arg name="config_file" default="$(find lidar_augmentation)/config/rosbag_test_config.yaml" />
+  <arg name="scenario" default="extreme" />
+  <arg name="debug" default="false" />
+  <arg name="rviz" default="false" />
+  <arg name="enable_timing" default="true" />
+  <arg name="enable_diagnostics" default="true" />
+  
+  <!-- ========== MAIN AUGMENTATION NODE ========== -->
+  <node name="lidar_augmenter" 
+        pkg="lidar_augmentation" 
+        type="lidar_augmenter_node" 
+        output="screen"
+        respawn="false">
+    
+    <rosparam file="$(arg config_file)" command="load" />
+    <param name="scenario" value="$(arg scenario)" />
+
+     <!-- ← ADD THIS LINE ↓ -->
+    <param name="stats_publish_rate" value="2.0" />  <!-- Statistics at 2Hz, data still at 10Hz -->
+    
+
+    <!-- ROSBAG COMPATIBILITY: Dynamic topic discovery -->
+    <param name="enable_dynamic_discovery" value="true" />
+    <param name="discovery_retry_interval" value="2.0" />
+    <param name="discovery_timeout" value="30.0" />
+    
+    <!-- Performance settings -->
+    <param name="enable_timing" value="$(arg enable_timing)" />
+    <param name="enable_diagnostics" value="$(arg enable_diagnostics)" />
+    <param name="processing/target_rate" value="10.0" />
+    <param name="processing/max_processing_time" value="0.015" />
+    
+    <!-- Fixed parameter structure -->
+    <param name="debug_enabled" value="$(arg debug)" />
+    <param name="verbose_logging" value="$(arg debug)" />
+  </node>
+
+  <!-- SUPPRESS PCL WARNINGS -->
+  <env name="ROSCONSOLE_FORMAT" value="[${severity}] [${time}] [${node}]: ${message}" />
+  <env name="ROSCONSOLE_MIN_SEVERITY" value="ERROR" />
+  
+  <!-- No topic monitors - they cause errors when topics don't exist -->
+  
+  <group if="$(arg rviz)">
+    <node name="rviz" pkg="rviz" type="rviz" 
+          args="-d $(find lidar_augmentation)/rviz/rosbag_visualization.rviz"
+          required="false" />
+  </group>
+  
+</launch>

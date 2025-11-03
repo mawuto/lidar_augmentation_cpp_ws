@@ -1,0 +1,9 @@
+lidar_augmentation
+/home/mawuto/lidar_augmentation_cpp_ws/devel/.private/lidar_augmentation/share/lidar_augmentation/cmake/lidar_augmentationConfig.cmake /home/mawuto/lidar_augmentation_cpp_ws/devel/share/lidar_augmentation/cmake/lidar_augmentationConfig.cmake
+/home/mawuto/lidar_augmentation_cpp_ws/devel/.private/lidar_augmentation/share/lidar_augmentation/cmake/lidar_augmentationConfig-version.cmake /home/mawuto/lidar_augmentation_cpp_ws/devel/share/lidar_augmentation/cmake/lidar_augmentationConfig-version.cmake
+/home/mawuto/lidar_augmentation_cpp_ws/devel/.private/lidar_augmentation/lib/liblidar_augmentation_core.so /home/mawuto/lidar_augmentation_cpp_ws/devel/lib/liblidar_augmentation_core.so
+/home/mawuto/lidar_augmentation_cpp_ws/devel/.private/lidar_augmentation/lib/lidar_augmentation/test_point_cloud_processor /home/mawuto/lidar_augmentation_cpp_ws/devel/lib/lidar_augmentation/test_point_cloud_processor
+/home/mawuto/lidar_augmentation_cpp_ws/devel/.private/lidar_augmentation/lib/lidar_augmentation/test_integration /home/mawuto/lidar_augmentation_cpp_ws/devel/lib/lidar_augmentation/test_integration
+/home/mawuto/lidar_augmentation_cpp_ws/devel/.private/lidar_augmentation/lib/lidar_augmentation/test_augmentation_methods /home/mawuto/lidar_augmentation_cpp_ws/devel/lib/lidar_augmentation/test_augmentation_methods
+/home/mawuto/lidar_augmentation_cpp_ws/devel/.private/lidar_augmentation/lib/lidar_augmentation/lidar_augmenter_node /home/mawuto/lidar_augmentation_cpp_ws/devel/lib/lidar_augmentation/lidar_augmenter_node
+/home/mawuto/lidar_augmentation_cpp_ws/devel/.private/lidar_augmentation/lib/pkgconfig/lidar_augmentation.pc /home/mawuto/lidar_augmentation_cpp_ws/devel/lib/pkgconfig/lidar_augmentation.pc

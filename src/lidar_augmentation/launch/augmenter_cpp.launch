@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<launch>
+  <!-- Load parameters -->
+  <rosparam file="$(find lidar_augmentation)/config/augmentation_params.yaml" command="load" />
+  
+  <!-- Launch the C++ LiDAR augmenter node -->
+  <node name="lidar_augmenter_cpp" 
+        pkg="lidar_augmentation" 
+        type="lidar_augmenter_node" 
+        output="screen">
+    
+    <!-- Input topics -->
+    <param name="input_topic" value="/ouster/points" />
+    <param name="imu_topic" value="/ouster/imu" />
+    
+    <!-- Output topic -->
+    <param name="output_topic" value="/augmented_points" />
+    
+    <!-- Sensor type -->
+    <param name="sensor_type" value="generic" />
+    
+    <!-- Enable augmentations -->
+    <param name="enable_dropout" value="true" />
+    <param name="enable_noise" value="true" />
+    <param name="enable_motion_distortion" value="true" />
+    <param name="enable_occlusion" value="false" />
+    <param name="enable_fov_reduction" value="false" />
+    
+    <!-- IMU synchronization settings -->
+    <param name="imu_buffer_size" value="1000" />
+    <param name="time_tolerance" value="0.01" />
+    
+  </node>
+  
+</launch>

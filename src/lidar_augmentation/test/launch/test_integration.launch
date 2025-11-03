@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<launch>
+  <!-- Launch the node for testing -->
+  <node name="lidar_augmenter_test" 
+        pkg="lidar_augmentation" 
+        type="lidar_augmenter_node" 
+        output="screen">
+    <param name="input_topic" value="/test_input" />
+    <param name="output_topic" value="/test_output" />
+    <param name="imu_topic" value="/test_imu" />
+    <param name="sensor_type" value="generic" />
+    
+    <!-- Add test parameters directly -->
+    <param name="enable_dropout" value="true" />
+    <param name="enable_noise" value="true" />
+    <param name="enable_fov_reduction" value="false" />
+    <param name="dropout_rate" value="0.1" />
+  </node>
+  
+  <!-- Run the test -->
+  <test test-name="test_integration" 
+        pkg="lidar_augmentation" 
+        type="test_integration" />
+</launch>

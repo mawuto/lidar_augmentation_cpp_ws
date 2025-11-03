@@ -1,0 +1,61 @@
+mawuto@mawuto-pc:~/lidar_augmentation_cpp_ws$ catkin test lidar_augmentation
+Starting  >>> lidar_augmentation                                                                                                                                                                                                                                                 
+Output     << lidar_augmentation:make /home/mawuto/lidar_augmentation_cpp_ws/logs/lidar_augmentation/test.make.000.log                                                                                                                                                           
+-- run_tests.py: execute commands
+  /home/mawuto/lidar_augmentation_cpp_ws/devel/.private/lidar_augmentation/lib/lidar_augmentation/test_augmentation_methods --gtest_output=xml:/home/mawuto/lidar_augmentation_cpp_ws/build/lidar_augmentation/test_results/lidar_augmentation/gtest-test_augmentation_methods.xml
+[==========] Running 3 tests from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 3 tests from AugmentationTest
+[ RUN      ] AugmentationTest.RandomDropoutTest
+Original: 100 points
+After dropout: 54 points
+[       OK ] AugmentationTest.RandomDropoutTest (0 ms)
+[ RUN      ] AugmentationTest.AddNoiseTest
+/home/mawuto/lidar_augmentation_cpp_ws/src/lidar_augmentation/test/cpp/test_augmentation_methods.cpp:73: Failure
+Value of: points_changed
+  Actual: false
+Expected: true
+Noise added successfully to 100 points
+[  FAILED  ] AugmentationTest.AddNoiseTest (0 ms)
+[ RUN      ] AugmentationTest.ReduceFOVTest
+FOV reduction: 100 -> 100 points
+[       OK ] AugmentationTest.ReduceFOVTest (0 ms)
+[----------] 3 tests from AugmentationTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 3 tests from 1 test suite ran. (0 ms total)
+[  PASSED  ] 2 tests.
+[  FAILED  ] 1 test, listed below:
+[  FAILED  ] AugmentationTest.AddNoiseTest
+
+ 1 FAILED TEST
+-- run_tests.py: execute commands
+  /home/mawuto/lidar_augmentation_cpp_ws/devel/.private/lidar_augmentation/lib/lidar_augmentation/test_point_cloud_processor --gtest_output=xml:/home/mawuto/lidar_augmentation_cpp_ws/build/lidar_augmentation/test_results/lidar_augmentation/gtest-test_point_cloud_processor.xml
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from PointCloudProcessorTest
+[ RUN      ] PointCloudProcessorTest.BasicFunctionality
+PointCloudProcessor basic test passed
+[       OK ] PointCloudProcessorTest.BasicFunctionality (0 ms)
+[----------] 1 test from PointCloudProcessorTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+cd /home/mawuto/lidar_augmentation_cpp_ws/build/lidar_augmentation; catkin test --get-env lidar_augmentation | catkin env -si  /usr/bin/make run_tests; cd -
+
+_________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
+Errors     << lidar_augmentation:results /home/mawuto/lidar_augmentation_cpp_ws/logs/lidar_augmentation/test.results.000.log                                                                                                                                                     
+test_results/lidar_augmentation/gtest-test_augmentation_methods.xml: 6 tests, 0 errors, 2 failures, 0 skipped
+Summary: 8 tests, 0 errors, 2 failures, 0 skipped
+cd /home/mawuto/lidar_augmentation_cpp_ws/build/lidar_augmentation; catkin test --get-env lidar_augmentation | catkin env -si  catkin_test_results; cd -
+
+.................................................................................................................................................................................................................................................................................
+Failed     << lidar_augmentation:results  [ Exited with code 1 ]                                                                                                                                                                                                                 
+Failed    <<< lidar_augmentation          [ 0.5 seconds ]                                                                                                                                                                                                                        
+[test] Summary: 0 of 1 packages succeeded.                                                                                                                                                                                                                                       
+[test]   Ignored:   None.                                                                                                                                                                                                                                                        
+[test]   Warnings:  None.                                                                                                                                                                                                                                                        
+[test]   Abandoned: None.                                                                                                                                                                                                                                                        
+[test]   Failed:    1 packages failed.                                                                                                                                                                                                                                           
+[test] Runtime: 0.5 seconds total.   

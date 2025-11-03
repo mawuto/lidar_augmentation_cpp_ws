@@ -1,0 +1,166 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>lidar_augmentation</name>
+  <version>1.0.0</version>
+  <description>
+    High-performance LiDAR data augmentation package for adverse weather and sensor degradation simulation.
+    Provides real-time point cloud processing at 25-30Hz with comprehensive augmentation techniques including
+    dropout, noise injection, FOV reduction, occlusion simulation, and motion distortion.
+    Supports multiple sensor types (Ouster, Livox, generic) with flexible configuration.
+  </description>
+
+  <!-- Package Metadata -->
+  <maintainer email="your.email@domain.com">Your Name</maintainer>
+  <license>MIT</license>
+  <url type="website">https://github.com/yourusername/lidar_augmentation</url>
+  <url type="bugtracker">https://github.com/yourusername/lidar_augmentation/issues</url>
+  <url type="repository">https://github.com/yourusername/lidar_augmentation</url>
+
+  <!-- Author Information -->
+  <author email="your.email@domain.com">Your Name</author>
+
+  <!-- Build Tool -->
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <!-- ===================== -->
+  <!-- ROS BUILD DEPENDENCIES -->
+  <!-- ===================== -->
+  
+  <!-- Core ROS C++ dependencies -->
+  <build_depend>roscpp</build_depend>
+  <build_depend>rospy</build_depend>
+  <build_depend>std_msgs</build_depend>
+  <build_depend>sensor_msgs</build_depend>
+  <build_depend>geometry_msgs</build_depend>
+  
+  <!-- Transform and messaging -->
+  <build_depend>tf2</build_depend>
+  <build_depend>tf2_ros</build_depend>
+  <build_depend>tf2_eigen</build_depend>
+  <build_depend>message_filters</build_depend>
+  
+  <!-- Point Cloud Library integration -->
+  <build_depend>pcl_conversions</build_depend>
+  <build_depend>pcl_ros</build_depend>
+  
+  <!-- ROS utilities -->
+  <build_depend>roslib</build_depend>
+
+  <!-- ========================= -->
+  <!-- SYSTEM BUILD DEPENDENCIES -->
+  <!-- ========================= -->
+  
+  <!-- Point Cloud Library (PCL) - Critical for point cloud processing -->
+  <build_depend>libpcl-all-dev</build_depend>
+  
+  <!-- Eigen3 - Matrix operations and transformations -->
+  <build_depend>libeigen3-dev</build_depend>
+  
+  <!-- YAML-CPP - Configuration file parsing -->
+  <build_depend>libyaml-cpp-dev</build_depend>
+  
+  <!-- Boost - System utilities and function binding -->
+  <build_depend>libboost-all-dev</build_depend>
+
+  <!-- ======================= -->
+  <!-- ROS RUNTIME DEPENDENCIES -->
+  <!-- ======================= -->
+  
+  <!-- Core ROS runtime -->
+  <exec_depend>roscpp</exec_depend>
+  <exec_depend>rospy</exec_depend>
+  <exec_depend>std_msgs</exec_depend>
+  <exec_depend>sensor_msgs</exec_depend>
+  <exec_depend>geometry_msgs</exec_depend>
+  
+  <!-- Transform and messaging runtime -->
+  <exec_depend>tf2</exec_depend>
+  <exec_depend>tf2_ros</exec_depend>
+  <exec_depend>tf2_eigen</exec_depend>
+  <exec_depend>message_filters</exec_depend>
+  
+  <!-- PCL runtime -->
+  <exec_depend>pcl_conversions</exec_depend>
+  <exec_depend>pcl_ros</exec_depend>
+  
+  <!-- ROS utilities runtime -->
+  <exec_depend>roslib</exec_depend>
+
+  <!-- ========================== -->
+  <!-- SYSTEM RUNTIME DEPENDENCIES -->
+  <!-- ========================== -->
+  
+  <!-- PCL runtime libraries -->
+  <exec_depend>libpcl-all</exec_depend>
+  
+  <!-- YAML-CPP runtime - FIXED VERSION -->
+  <exec_depend>libyaml-cpp-dev</exec_depend>
+  
+  <!-- Boost runtime -->
+  <exec_depend>libboost-system</exec_depend>
+  <exec_depend>libboost-filesystem</exec_depend>
+  <exec_depend>libboost-thread</exec_depend>
+
+  <!-- ======================== -->
+  <!-- PYTHON TOOL DEPENDENCIES -->
+  <!-- ======================== -->
+  
+  <!-- Python dependencies for analysis tools -->
+  <exec_depend>python3-numpy</exec_depend>
+  <exec_depend>python3-matplotlib</exec_depend>
+  <exec_depend>python3-scipy</exec_depend>
+  <exec_depend>python3-yaml</exec_depend>
+  <exec_depend>python3-opencv</exec_depend>
+
+  <!-- ROS Python tools -->
+  <exec_depend>python3-rospy</exec_depend>
+  <exec_depend>python3-rospkg</exec_depend>
+
+  <!-- =================== -->
+  <!-- TESTING DEPENDENCIES -->
+  <!-- =================== -->
+  
+  <!-- C++ testing -->
+  <test_depend>gtest</test_depend>
+  <test_depend>rostest</test_depend>
+  <test_depend>rosunit</test_depend>
+  
+  <!-- Python testing -->
+  <test_depend>python3-pytest</test_depend>
+  <test_depend>python3-nose</test_depend>
+
+  <!-- ==================== -->
+  <!-- DEVELOPMENT DEPENDENCIES -->
+  <!-- ==================== -->
+  
+  <!-- Documentation generation -->
+  <build_depend>doxygen</build_depend>
+  <build_depend>graphviz</build_depend>
+
+  <!-- =================== -->
+  <!-- VISUALIZATION DEPENDENCIES -->
+  <!-- =================== -->
+  
+  <!-- RViz for visualization -->
+  <exec_depend>rviz</exec_depend>
+  <exec_depend>visualization_msgs</exec_depend>
+  
+  <!-- RQT tools for parameter tuning -->
+  <exec_depend>rqt</exec_depend>
+  <exec_depend>rqt_gui</exec_depend>
+  <exec_depend>rqt_reconfigure</exec_depend>
+
+  <!-- ================== -->
+  <!-- ROSBAG DEPENDENCIES -->
+  <!-- ================== -->
+  
+  <!-- For rosbag playback and recording -->
+  <exec_depend>rosbag</exec_depend>
+  <exec_depend>topic_tools</exec_depend>
+
+  <!-- ✅ SIMPLIFIED EXPORT SECTION - NO MORE METAPACKAGE WARNINGS -->
+  <export>
+    <build_type>catkin</build_type>
+  </export>
+
+</package>
