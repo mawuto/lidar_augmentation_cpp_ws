@@ -168,8 +168,7 @@ rosrun rqt_graph rqt_graph
 (Ouster does not need this converter.)
 - The exact converter commands and the metrics recording + evo_ape pipeline follow the procedures documented in the Multi-Modal LiDAR Dataset reproducibility guide (docs/pipelines/README.md).
 - See:
-	 - TIERS repo: https://github.com/TIERS/multi_modal_lidar_dataset (or lab fork)
-	 - Personal repo: https://github.com/mawuto/multi_modal_lidar_dataset
+	 - TIERS repo: https://github.com/TIERS/multi_modal_lidar_dataset
 
 ## 📂 Launch Files
 The package uses a single production-ready launch file:
@@ -270,8 +269,8 @@ chmod +x scripts/tools/*.py
 
 - ⚠️ RViz toggle warning:
 
-- If you enable RViz in both this package and your SLAM launch, one may “take over” rendering.
-- Recommendation: keep RViz off in this package when using a SLAM’s built-in RViz.
+   - If you enable RViz in both this package and your SLAM launch, one may “take over” rendering.
+   - Recommendation: keep RViz off in this package when using a SLAM’s built-in RViz.
 
 - Diagnostics / stats / BEV:
 
