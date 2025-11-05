@@ -262,21 +262,25 @@ chmod +x scripts/tools/*.py
 ## 🖼️ Visualization & Tools
 
 - RViz preset:
-    ```bash
-rviz -d $(rospack find lidar_augmentation)/rviz/rosbag_visualization.rviz
-    ```
-   
+
+   ```bash  
+  rviz -d $(rospack find lidar_augmentation)/rviz/rosbag_visualization.rviz   
+
+   ```
+
 - ⚠️ RViz toggle warning:
+
 - If you enable RViz in both this package and your SLAM launch, one may “take over” rendering.
 - Recommendation: keep RViz off in this package when using a SLAM’s built-in RViz.
+
 - Diagnostics / stats / BEV:
 
     ```bash
-rosrun lidar_augmentation topic_diagnostics.py (only if needed)
+  rosrun lidar_augmentation topic_diagnostics.py (only if needed)
 
-python3 $(rospack find lidar_augmentation)/scripts/tools/lidar_augmentation_visualizer.py
+  python3 $(rospack find lidar_augmentation)/scripts/tools/lidar_augmentation_visualizer.py
 
-python3 $(rospack find lidar_augmentation)/scripts/tools/lidar_bev_visualizer.py
+  python3 $(rospack find lidar_augmentation)/scripts/tools/lidar_bev_visualizer.py
     ```
 
 ## 📊 Evaluation & Metrics (follow the dataset pipeline)
