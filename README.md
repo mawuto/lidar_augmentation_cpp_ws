@@ -248,15 +248,13 @@ chmod +x scripts/tools/*.py
 - Ensure publish_statistics:=true in launch command.
 - Statistics publish rate defaults to **2Hz** to reduce CPU load.
 
-### To increase statistics frequency
-
-### In launch/rosbag_augmentation.launch, change:  
+### To increase statistics frequency ,in launch/rosbag_augmentation.launch, change:  
 
 <param name="stats_publish_rate" value="2.0" />  <!-- Default 2Hz -->  
 
 ### To faster rate:  
 
-<param name="stats_publish_rate" value="10.0" />  <!-- 10Hz for debugging -->
+<param name="stats_publish_rate" value="10.0" />  <!-- 10Hz for debugging if really needed -->
 
 ```
 
