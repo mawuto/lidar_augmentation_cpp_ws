@@ -56,10 +56,22 @@ class LidarBEVVisualizer:
             }
         }
         
-        self.bev_range = 100.0     #100 for outdoor and 50 for indoor
+        self.bev_range = 100.0
         self.point_size = 0.6
         
-        plt.style.use('dark_background')
+        #  WHITE BACKGROUND SETUP 
+        plt.style.use('default')
+        plt.rcParams['figure.facecolor'] = 'white'
+        plt.rcParams['axes.facecolor'] = 'white'
+        plt.rcParams['savefig.facecolor'] = 'white'
+        plt.rcParams['savefig.edgecolor'] = 'white'
+        plt.rcParams['text.color'] = 'black'
+        plt.rcParams['axes.labelcolor'] = 'black'
+        plt.rcParams['axes.edgecolor'] = 'black'
+        plt.rcParams['xtick.color'] = 'black'
+        plt.rcParams['ytick.color'] = 'black'
+        plt.rcParams['grid.color'] = 'gray'
+        plt.rcParams['grid.alpha'] = 0.3
         plt.rcParams['figure.max_open_warning'] = 0
         
         self.setup_plots()
@@ -106,8 +118,9 @@ class LidarBEVVisualizer:
     def setup_plots(self):
         """Setup visualization plots"""
         self.fig = plt.figure(figsize=(18, 14))
+        #  BLACK TEXT FOR WHITE BACKGROUND
         self.fig.suptitle('LiDAR BEV Comparison - FIXED', 
-                         fontsize=16, fontweight='bold', color='white')
+                         fontsize=16, fontweight='bold', color='black')
         
         self.ax1 = plt.subplot(2, 2, 1)
         self.ax2 = plt.subplot(2, 2, 2)
@@ -122,12 +135,12 @@ class LidarBEVVisualizer:
         ]
         
         for ax, title in axes_info:
-            ax.set_title(title, fontweight='bold', fontsize=12)
-            ax.set_xlabel('X (meters)')
-            ax.set_ylabel('Y (meters)')
+            ax.set_title(title, fontweight='bold', fontsize=12, color='black')
+            ax.set_xlabel('X (meters)', color='black')
+            ax.set_ylabel('Y (meters)', color='black')
             ax.set_xlim(-self.bev_range, self.bev_range)
             ax.set_ylim(-self.bev_range, self.bev_range)
-            ax.grid(True, alpha=0.3)
+            ax.grid(True, alpha=0.3, color='gray')
             ax.set_aspect('equal')
         
         plt.tight_layout()
@@ -183,8 +196,9 @@ class LidarBEVVisualizer:
             filename = f"lidar_bev_{timestamp}{suffix}.png"
             filepath = os.path.join(self.save_directory, filename)
             
+            # WHITE BACKGROUND 
             self.fig.savefig(filepath, dpi=300, bbox_inches='tight', 
-                           facecolor='black', edgecolor='none')
+                           facecolor='white', edgecolor='none')
             
             self.last_save_time = time.time()
             rospy.loginfo(f" Saved: {filename}")
@@ -193,12 +207,12 @@ class LidarBEVVisualizer:
         except Exception as e:
             rospy.logwarn(f" Save error: {e}")
             return None
+            
     def are_data_synchronized(self, cloud_data, max_time_diff=0.5):
         """Check if original and augmented data are from similar timestamps"""
         if 'original_timestamp' not in cloud_data or 'augmented_timestamp' not in cloud_data:
             return False
         
-        # SYNC FOR OUSTER 
         sensor_name = cloud_data.get('sensor_name', '')
         if 'ouster' in sensor_name.lower():
             max_time_diff = 0.2  # Stricter sync for Ouster
@@ -218,11 +232,12 @@ class LidarBEVVisualizer:
                 self.latest_clouds[sensor_name]['original'] = points
                 self.latest_clouds[sensor_name]['original_count'] = len(points)
                 self.latest_clouds[sensor_name]['original_timestamp'] = time.time()
+                self.latest_clouds[sensor_name]['sensor_name'] = sensor_name
                 
                 self.last_data_time = time.time()
                 if not self.has_ever_received_data:
                     self.has_ever_received_data = True
-                    rospy.loginfo(f"First data from {sensor_name}!")
+                    rospy.loginfo(f" First data from {sensor_name}!")
                     
         except Exception as e:
             rospy.logwarn(f"Error {sensor_name}: {e}")
@@ -239,11 +254,12 @@ class LidarBEVVisualizer:
                 self.latest_clouds[sensor_name]['augmented'] = points
                 self.latest_clouds[sensor_name]['augmented_count'] = len(points)
                 self.latest_clouds[sensor_name]['augmented_timestamp'] = time.time()
+                self.latest_clouds[sensor_name]['sensor_name'] = sensor_name
                 
                 self.last_data_time = time.time()
                 if not self.has_ever_received_data:
                     self.has_ever_received_data = True
-                    rospy.loginfo(f"First data from {sensor_name}!")
+                    rospy.loginfo(f" First data from {sensor_name}!")
                     
         except Exception as e:
             rospy.logwarn(f"Error {sensor_name}: {e}")
@@ -270,22 +286,24 @@ class LidarBEVVisualizer:
                     ax.clear()
                     ax.set_xlim(-self.bev_range, self.bev_range)
                     ax.set_ylim(-self.bev_range, self.bev_range)
-                    ax.grid(True, alpha=0.3)
+                    ax.grid(True, alpha=0.3, color='gray')
                     ax.set_aspect('equal')
                 
-                self.ax1.set_title('Original Point Clouds', fontweight='bold')
-                self.ax2.set_title('Augmented Point Clouds', fontweight='bold')
-                self.ax3.set_title('Removed Points', fontweight='bold')
-                self.ax4.set_title('Side-by-Side', fontweight='bold')
+                self.ax1.set_title('Original Point Clouds', fontweight='bold', color='black')
+                self.ax2.set_title('Augmented Point Clouds', fontweight='bold', color='black')
+                self.ax3.set_title('Removed Points', fontweight='bold', color='black')
+                self.ax4.set_title('Side-by-Side', fontweight='bold', color='black')
                 
                 if not self.has_ever_received_data:
+                    #  ORANGE TEXT 
                     self.ax1.text(0, 0, 'Waiting for data...', 
-                                 ha='center', va='center', color='yellow')
+                                 ha='center', va='center', color='darkorange', fontsize=14)
                     return
                 
                 elif self.rosbag_finished:
-                    self.ax1.text(0, 0, 'ROSBAG FINISHED \nPress Ctrl+C to exit', 
-                                 ha='center', va='center', color='lightgreen')
+                    #  GREEN TEXT 
+                    self.ax1.text(0, 0, 'ROSBAG FINISHED\nPress Ctrl+C to exit', 
+                                 ha='center', va='center', color='darkgreen', fontsize=14, fontweight='bold')
                     return
                 
                 # Process active data
@@ -295,10 +313,9 @@ class LidarBEVVisualizer:
                 for sensor_name, cloud_data in self.latest_clouds.items():
                     if 'original' not in cloud_data or 'augmented' not in cloud_data:
                         continue
-
-                    # SYNCHRONIZATION CHECK
+                    
                     if not self.are_data_synchronized(cloud_data):
-                        continue  # Skip unsynchronized data
+                        continue
                     
                     original_points = cloud_data['original']
                     augmented_points = cloud_data['augmented']
@@ -358,14 +375,15 @@ class LidarBEVVisualizer:
                 if total_removed > 0:
                     self.ax3.text(0, self.bev_range*0.9, f'Total Removed: {total_removed:,}', 
                                  ha='center', fontweight='bold', color='red', fontsize=12,
-                                 bbox=dict(boxstyle="round", facecolor='black', edgecolor='red'))
+                                 bbox=dict(boxstyle="round", facecolor='white', 
+                                          edgecolor='red', linewidth=2))
                 
-                # Side-by-side labels
-                self.ax4.axvline(x=0, color='white', linestyle='--', alpha=0.7)
+                # Side-by-side labels ( BLACK DASHED LINE, BLACK TEXT)
+                self.ax4.axvline(x=0, color='black', linestyle='--', alpha=0.7, linewidth=1.5)
                 self.ax4.text(-25, self.bev_range*0.9, 'ORIGINAL', 
-                             ha='center', fontweight='bold', color='white')
+                             ha='center', fontweight='bold', color='black', fontsize=12)
                 self.ax4.text(25, self.bev_range*0.9, 'AUGMENTED', 
-                             ha='center', fontweight='bold', color='white')
+                             ha='center', fontweight='bold', color='black', fontsize=12)
                 
                 # Auto-save logic
                 if has_data and not self.rosbag_finished:
@@ -393,9 +411,7 @@ class LidarBEVVisualizer:
 
 def main():
     try:
-        # 500ms = 0.5s = 2Hz (matching C++ statistics throttling)
         update_rate_ms = 500
-        
         visualizer = LidarBEVVisualizer(update_interval=update_rate_ms)
         visualizer.start_visualization()
         

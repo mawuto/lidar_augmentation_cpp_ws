@@ -39,8 +39,19 @@ class LidarAugmentationVisualizer:
         self.total_messages = 0
         self.start_time = time.time()
         
-        # Setup matplotlib
-        plt.style.use('dark_background')
+        #  WHITE BACKGROUND SETUP
+        plt.style.use('default')
+        plt.rcParams['figure.facecolor'] = 'white'
+        plt.rcParams['axes.facecolor'] = 'white'
+        plt.rcParams['savefig.facecolor'] = 'white'
+        plt.rcParams['text.color'] = 'black'
+        plt.rcParams['axes.labelcolor'] = 'black'
+        plt.rcParams['axes.edgecolor'] = 'black'
+        plt.rcParams['xtick.color'] = 'black'
+        plt.rcParams['ytick.color'] = 'black'
+        plt.rcParams['grid.color'] = 'gray'
+        plt.rcParams['grid.alpha'] = 0.3
+        
         self.setup_plots()
         
         # Subscribe to statistics
@@ -57,10 +68,10 @@ class LidarAugmentationVisualizer:
         
     def setup_plots(self):
         """Setup the 4-plot dashboard"""
-        # Create figure with subplots
         self.fig = plt.figure(figsize=(16, 12))
+        #  BLACK TEXT FOR WHITE BACKGROUND
         self.fig.suptitle(' LiDAR Augmentation Real-Time Dashboard', 
-                         fontsize=16, fontweight='bold', color='white')
+                         fontsize=16, fontweight='bold', color='black')
         
         # Create 2x2 subplot grid
         self.ax1 = plt.subplot(2, 2, 1)  # Point counts timeline
@@ -69,28 +80,28 @@ class LidarAugmentationVisualizer:
         self.ax4 = plt.subplot(2, 2, 4)  # Statistics summary
         
         # Configure Plot 1: Point Counts Timeline
-        self.ax1.set_title(' Point Counts Timeline', fontweight='bold', pad=20)
-        self.ax1.set_xlabel('Time (relative seconds)')
-        self.ax1.set_ylabel('Point Count')
-        self.ax1.grid(True, alpha=0.3)
+        self.ax1.set_title(' Point Counts Timeline', fontweight='bold', pad=20, color='black')
+        self.ax1.set_xlabel('Time (relative seconds)', color='black')
+        self.ax1.set_ylabel('Point Count', color='black')
+        self.ax1.grid(True, alpha=0.3, color='gray')
         self.ax1.legend(loc='upper right')
         
         # Configure Plot 2: Reduction Percentage
-        self.ax2.set_title(' Point Reduction Percentage', fontweight='bold', pad=20)
-        self.ax2.set_xlabel('Time (relative seconds)')
-        self.ax2.set_ylabel('Reduction (%)')
-        self.ax2.grid(True, alpha=0.3)
+        self.ax2.set_title(' Point Reduction Percentage', fontweight='bold', pad=20, color='black')
+        self.ax2.set_xlabel('Time (relative seconds)', color='black')
+        self.ax2.set_ylabel('Reduction (%)', color='black')
+        self.ax2.grid(True, alpha=0.3, color='gray')
         self.ax2.legend(loc='upper right')
         
         # Configure Plot 3: Processing Time
-        self.ax3.set_title(' Processing Time Comparison', fontweight='bold', pad=20)
-        self.ax3.set_xlabel('Time (relative seconds)')
-        self.ax3.set_ylabel('Processing Time (ms)')
-        self.ax3.grid(True, alpha=0.3)
+        self.ax3.set_title(' Processing Time Comparison', fontweight='bold', pad=20, color='black')
+        self.ax3.set_xlabel('Time (relative seconds)', color='black')
+        self.ax3.set_ylabel('Processing Time (ms)', color='black')
+        self.ax3.grid(True, alpha=0.3, color='gray')
         self.ax3.legend(loc='upper right')
         
         # Configure Plot 4: Statistics Summary (text-based)
-        self.ax4.set_title(' Live Statistics Summary', fontweight='bold', pad=20)
+        self.ax4.set_title(' Live Statistics Summary', fontweight='bold', pad=20, color='black')
         self.ax4.axis('off')  # Turn off axes for text display
         
         # Store line objects for each sensor
@@ -117,7 +128,6 @@ class LidarAugmentationVisualizer:
             augmented_points = int(stats.get('augmented_points', 0))
             reduction_percent = float(stats.get('point_reduction_percent', 0))
             processing_time = int(stats.get('processing_time_ms', 0))
-            # Extract scenario parameters
             active_scenario = stats.get('active_scenario', 'unknown')
             scenario_parameters = stats.get('scenario_parameters', {})
             
@@ -137,12 +147,10 @@ class LidarAugmentationVisualizer:
                         'reduction_percent': deque(maxlen=self.buffer_size),
                         'processing_time': deque(maxlen=self.buffer_size),
                         'message_count': 0,
-                        # Initialize scenario fields
                         'active_scenario': 'unknown',
                         'scenario_parameters': {}
                     }
                 
-                # Get data reference FIRST, then update
                 data = self.sensor_data[sensor_name]
                 data['active_scenario'] = active_scenario
                 data['scenario_parameters'] = scenario_parameters
@@ -173,22 +181,22 @@ class LidarAugmentationVisualizer:
                 self.ax4.clear()
                 
                 # Reconfigure axes
-                self.ax1.set_title(' Point Counts Timeline', fontweight='bold', pad=20)
-                self.ax1.set_xlabel('Time (seconds)')
-                self.ax1.set_ylabel('Point Count')
-                self.ax1.grid(True, alpha=0.3)
+                self.ax1.set_title(' Point Counts Timeline', fontweight='bold', pad=20, color='black')
+                self.ax1.set_xlabel('Time (seconds)', color='black')
+                self.ax1.set_ylabel('Point Count', color='black')
+                self.ax1.grid(True, alpha=0.3, color='gray')
                 
-                self.ax2.set_title(' Point Reduction Percentage', fontweight='bold', pad=20)
-                self.ax2.set_xlabel('Time (seconds)')
-                self.ax2.set_ylabel('Reduction (%)')
-                self.ax2.grid(True, alpha=0.3)
+                self.ax2.set_title(' Point Reduction Percentage', fontweight='bold', pad=20, color='black')
+                self.ax2.set_xlabel('Time (seconds)', color='black')
+                self.ax2.set_ylabel('Reduction (%)', color='black')
+                self.ax2.grid(True, alpha=0.3, color='gray')
                 
-                self.ax3.set_title(' Processing Time Comparison', fontweight='bold', pad=20)
-                self.ax3.set_xlabel('Time (seconds)')
-                self.ax3.set_ylabel('Processing Time (ms)')
-                self.ax3.grid(True, alpha=0.3)
+                self.ax3.set_title(' Processing Time Comparison', fontweight='bold', pad=20, color='black')
+                self.ax3.set_xlabel('Time (seconds)', color='black')
+                self.ax3.set_ylabel('Processing Time (ms)', color='black')
+                self.ax3.grid(True, alpha=0.3, color='gray')
                 
-                self.ax4.set_title(' Live Statistics Summary', fontweight='bold', pad=20)
+                self.ax4.set_title(' Live Statistics Summary', fontweight='bold', pad=20, color='black')
                 self.ax4.axis('off')
                 
                 # Plot data for each sensor
@@ -235,7 +243,7 @@ class LidarAugmentationVisualizer:
                         avg_reduction = np.mean(reduction_percent)
                         avg_processing = np.mean(processing_time)
                         scenario_info = f"\n  Scenario: {data.get('active_scenario', 'unknown').upper()}"
-
+                        
                         # Add active parameters summary
                         params = data.get('scenario_parameters', {})
                         active_augs = []
@@ -261,7 +269,7 @@ class LidarAugmentationVisualizer:
 
                         if params.get('sparse_scan', {}).get('enabled'): 
                             skip = params.get('sparse_scan', {}).get('skip_factor', 1)
-                            reduction = (skip - 1) / skip * 100  # Convert to percentage
+                            reduction = (skip - 1) / skip * 100
                             active_augs.append(f"Sparse_Scan({reduction:.0f}%↓)")
 
                         if params.get('motion_distortion', {}).get('enabled'): 
@@ -270,7 +278,6 @@ class LidarAugmentationVisualizer:
                             active_augs.append(f"Motion_Distortion(v:{lin_vel:.1f}m/s,ω:{ang_vel:.1f}rad/s)")
                         
                         if active_augs:
-                            #scenario_info += f"\n  Active: {', '.join(active_augs)}"
                             aug_lines = []
                             for i in range(0, len(active_augs), 2):
                                 line_augs = active_augs[i:i+2]
@@ -294,7 +301,7 @@ class LidarAugmentationVisualizer:
                 self.ax2.legend(loc='upper right', fontsize=8)
                 self.ax3.legend(loc='upper right', fontsize=8)
 
-                #param summary
+                # Global scenario summary
                 global_scenario = None
                 global_params = None
                 for sensor_name, data in self.sensor_data.items():
@@ -313,15 +320,19 @@ class LidarAugmentationVisualizer:
                 # Plot 4: Summary text
                 if summary_text:
                     full_summary = "\n".join(summary_text)
-                    full_summary += f"\n Total Messages: {self.total_messages}\n"
+                    full_summary += f"\ Total Messages: {self.total_messages}\n"
                     full_summary += f" Runtime: {time.time() - self.start_time:.1f}s"
                     
+                    #  LIGHT GRAY BOX WITH BLACK TEXT 
                     self.ax4.text(0.05, 0.95, full_summary, 
                                  transform=self.ax4.transAxes,
                                  fontsize=8, verticalalignment='top',
                                  fontfamily='monospace',
-                                 bbox=dict(boxstyle="round,pad=0.3", 
-                                          facecolor='black', alpha=0.8))
+                                 color='black',
+                                 bbox=dict(boxstyle="round,pad=0.5", 
+                                          facecolor='lightgray', 
+                                          edgecolor='black',
+                                          alpha=0.3))
                 
                 # Auto-scale axes
                 for ax in [self.ax1, self.ax2, self.ax3]:
@@ -333,7 +344,6 @@ class LidarAugmentationVisualizer:
     
     def start_visualization(self):
         """Start the real-time visualization"""
-        # Create animation
         self.animation = animation.FuncAnimation(
             self.fig, 
             self.update_plots,
@@ -347,13 +357,10 @@ class LidarAugmentationVisualizer:
 
 def main():
     try:
-        # Create visualizer
         visualizer = LidarAugmentationVisualizer(
-            buffer_size=200,    # Show last 200 data points
-            update_interval=1000  # Update every 1 second
+            buffer_size=200,
+            update_interval=1000
         )
-        
-        # Start visualization
         visualizer.start_visualization()
         
     except rospy.ROSInterruptException:
