@@ -41,7 +41,7 @@
 │   └── images
 │       ├── bev_comparison.png
 │       ├── dashboard_overview.png
-|       ├── table_ape_results.png
+│       ├── table_ape_results.png
 │       └── severity_outdoor_examples
 │           ├── bev
 │           │   ├── light
