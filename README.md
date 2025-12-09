@@ -41,6 +41,7 @@
 │   └── images
 │       ├── bev_comparison.png
 │       ├── dashboard_overview.png
+|       ├── table_ape_results.png
 │       └── severity_outdoor_examples
 │           ├── bev
 │           │   ├── light
@@ -357,6 +358,16 @@ catkin_make run_tests
 catkin_test_results build
 ```
 (Primary benchmarking/metrics are produced through the dataset pipeline above, not via gtests.)
+
+### 📊 APE Results Across Severity Levels
+
+The following table summarizes APE (mean ± std, in meters) for  
+five SLAM algorithms (FAST-LIO2, FASTER-LIO, S-FAST-LIO, GLIM, FAST-LIO-SAM)  
+across four degradation severities (L/M/H/X) and three sensors (Avia, Mid360, Ouster).
+
+<p align="center">
+  <img src="results/images/table_ape_results.png" width="85%">
+</p>
 
 ## 📸 Figures (Example Outputs)
 
