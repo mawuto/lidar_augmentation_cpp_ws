@@ -3,6 +3,7 @@
 [![Build (ROS Noetic)](https://img.shields.io/github/actions/workflow/status/mawuto/lidar_augmentation_cpp_ws/ci-noetic.yml?branch=main)](https://github.com/mawuto/lidar_augmentation_cpp_ws/actions)
 ![ROS](https://img.shields.io/badge/ROS-Noetic-blue)
 ![Ubuntu](https://img.shields.io/badge/Ubuntu-20.04-orange)
+![Docker](https://img.shields.io/badge/Docker-Ready-2496ED?logo=docker&logoColor=white)
 ![License](https://img.shields.io/badge/License-MIT-green)
 
 - Physics-aware LiDAR augmentation and simulation framework in **C++/ROS (catkin)** for stress-testing SLAM algorithms under controlled degradations including **dropout**, **Gaussian/outlier noise**, **FoV occlusion**, **motion distortion**, and **sparsification**.  
@@ -37,6 +38,10 @@
 ├── CITATION.cff
 ├── LICENSE
 ├── README.md
+├── Dockerfile
+├── .dockerignore
+├── docker
+│   └── entrypoint.sh
 ├── results
 │   └── images
 │       ├── bev_comparison.png
@@ -162,6 +167,54 @@ chmod +x scripts/tools/*.py
 ```
 ---
 
+## 🐳 Docker (Recommended for Reproducibility)
+
+A pre-configured Docker image is provided for running the full framework without manual ROS Noetic installation.
+
+### Requirements
+- [Docker](https://docs.docker.com/get-docker/) installed on your machine
+- Works on **Ubuntu**, **macOS**, and **Windows** (via WSL2)
+
+### Build the Docker image
+```bash  
+git clone https://github.com/mawuto/lidar_augmentation_cpp_ws.git  
+cd lidar_augmentation_cpp_ws  
+docker build -t lidar_augmentation:noetic .  
+```
+
+### Verify the build
+```bash  
+docker run --rm lidar_augmentation:noetic \
+    bash -c "rospack find lidar_augmentation && echo BUILD OK"  
+# Expected output:  
+# /catkin_ws/src/lidar_augmentation  
+# BUILD OK  
+```
+
+### Run the container
+```bash  
+docker run -it --rm --network=host lidar_augmentation:noetic bash  
+```
+> `--network=host` allows the container to communicate with ROS nodes running on the host machine (e.g., rosbag, SLAM, RViz).
+
+### Run the augmenter directly from Docker
+```bash  
+docker run -it --rm --network=host lidar_augmentation:noetic \
+    roslaunch lidar_augmentation rosbag_augmentation.launch \
+    scenario:=moderate publish_statistics:=true use_rviz:=false  
+```
+
+### Mount a rosbag from your host machine
+```bash  
+docker run -it --rm --network=host \
+    -v /path/to/your/bags:/bags \
+    lidar_augmentation:noetic bash  
+# Inside the container:  
+rosbag play /bags/your_file.bag --clock --pause  
+```
+---
+
+
 ## 🚀 Run Workflow (multi-terminal)
 
 **Important:** Always launch all nodes first, then press SPACE in the rosbag terminal to start playback.
@@ -176,7 +229,7 @@ rosbag play unitree_outdoor_tt.bag --clock --pause
 # Terminal 3 – Launch Augmenter / Full parameter control
 roslaunch lidar_augmentation rosbag_augmentation.launch publish_statistics:=true scenario:=moderate use_rviz:=false
 # scenario options: light | moderate | heavy | extreme
-    
+
 # Quick scenarios
 roslaunch lidar_augmentation rosbag_augmentation.launch scenario:=light
 roslaunch lidar_augmentation rosbag_augmentation.launch scenario:=extreme
@@ -242,11 +295,11 @@ To reproduce the experiments reported in the paper:
 5.	Evaluate the resulting trajectory with evo_ape as described in the paper.
 
 ## ⚙️ Configuration & Severities
-Main YAML: config/rosbag_test_config.yaml
+
 **Main Configuration File:**
 - **Location:** `src/lidar_augmentation/config/rosbag_test_config.yaml`
 - **Purpose:** Defines all severity scenarios (light→extreme) and sensor-specific parameters.
-- **Active Scenario:** Set Severity (low → extreme) and visualization toggles directly in **launch/rosbag_augmentation.launch** file parameter `scenario:=<name>` 
+- **Active Scenario:** Set Severity (low → extreme) and visualization toggles directly in **launch/rosbag_augmentation.launch** file parameter `scenario:=<name>`
 
 
 - Common parameters (names may differ slightly with your YAML):
@@ -277,41 +330,34 @@ rostopic list | grep augmented
 ```
 ---
 
-## 🐛 Troubleshooting  
+## 🐛 Troubleshooting
 
-```yaml
-
-### Issue: "No topics detected"  
-
-Always start rosbag with `--pause` flag, wait 5 seconds for topic propagation before launching augmenter.  
+### Issue: "No topics detected"
+Always start rosbag with `--pause` flag, wait 5 seconds for topic propagation before launching augmenter.
 
 ### Issue: "PCL timestamp warnings"
+This is normal. The node suppresses these at `L_ERROR` level (see `lidar_augmenter_node_main.cpp`).
 
-This is normal. The node suppresses these at L_ERROR level (see `lidar_augmenter_node_main.cpp`).  
+### Issue: "RViz conflicts"
+Disable RViz in either augmenter launch (`use_rviz:=false`) OR SLAM launch, not both.
 
-### Issue: "RViz conflicts"  
-
-Disable RViz in either augmenter launch (`use_rviz:=false`) OR SLAM launch, not both.  
-
-### Issue: "Python scripts not executable" 
-
-cd ~/lidar_augmentation_cpp_ws/src/lidar_augmentation
-chmod +x scripts/tools/*.py
-
-## Issue: "Statistics not publishing"
- 
-- Ensure publish_statistics:=true in launch command.
-- Statistics publish rate defaults to **2Hz** to reduce CPU load.
-
-### To increase statistics frequency ,in launch/rosbag_augmentation.launch, change:  
-
-<param name="stats_publish_rate" value="2.0" />  <!-- Default 2Hz -->  
-
-### To faster rate:  
-
-<param name="stats_publish_rate" value="10.0" />  <!-- 10Hz for debugging if really needed -->
-
+### Issue: "Python scripts not executable"
+```bash  
+cd ~/lidar_augmentation_cpp_ws/src/lidar_augmentation  
+chmod +x scripts/tools/*.py  
 ```
+
+### Issue: "Statistics not publishing"
+- Ensure `publish_statistics:=true` in launch command.
+- Statistics publish rate defaults to **2 Hz** to reduce CPU load.
+- To change rate, edit `launch/rosbag_augmentation.launch`:
+```xml  
+<!-- Default -->  
+<param name="stats_publish_rate" value="2.0" />  
+<!-- Faster (for debugging) -->  
+<param name="stats_publish_rate" value="10.0" />  
+```
+---
 
 ## 🖼️ Visualization & Tools
 
