@@ -19,7 +19,6 @@
     <rosparam file="$(arg config_file)" command="load" />
     <param name="scenario" value="$(arg scenario)" />
 
-     <!-- ← ADD THIS LINE ↓ -->
     <param name="stats_publish_rate" value="2.0" />  <!-- Statistics at 2Hz, data still at 10Hz -->
     
 

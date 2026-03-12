@@ -134,7 +134,7 @@ namespace lidar_augmentation
         std::unique_ptr<LidarAugmenter> augmenter_;
         std::unique_ptr<IMUSynchronizer> imu_sync_;
 
-        // Configuration - EXACT match to Python
+        // Configuration
         std::unordered_map<std::string, std::string> input_topics_;
         std::unordered_map<std::string, std::string> imu_topics_;
         std::string output_suffix_;
