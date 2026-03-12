@@ -97,7 +97,7 @@ namespace lidar_augmentation
             return std::make_tuple(result_cloud, mask);
         }
 
-        // structured dropout patterns
+        // EXACT match to Python structured dropout patterns
         if (pattern == "ring" || pattern == "line")
         {
             // Ring-based dropout for Ouster, line-based for Livox
@@ -285,39 +285,67 @@ namespace lidar_augmentation
 
         size_t noise_points_added = 0;
 
-        // Apply Gaussian noise
+        // Apply Gaussian noise (radial - corrected)
         if (gaussian_std > 0.0f)
         {
             std::normal_distribution<float> gaussian_noise(0.0f, gaussian_std);
+            const float min_range = 0.1f; // 10cm minimum (typical LiDAR near-field limit)
 
             for (auto &point : *result_cloud)
             {
-                point.x += gaussian_noise(rng_);
-                point.y += gaussian_noise(rng_);
-                point.z += gaussian_noise(rng_);
+                // Calculate range
+                float range = std::sqrt(point.x * point.x + point.y * point.y + point.z * point.z);
+
+                if (range > 1e-6f) // Avoid division by zero
+                {
+                    // Generate radial noise
+                    float range_noise = gaussian_noise(rng_);
+
+                    // Clamp to prevent negative/flipped points
+                    float new_range = std::max(range + range_noise, min_range);
+
+                    // Apply noise along beam direction only
+                    float scale = new_range / range;
+                    point.x *= scale;
+                    point.y *= scale;
+                    point.z *= scale;
+                }
             }
 
-            ROS_DEBUG_STREAM("Applied Gaussian noise with std=" << gaussian_std);
+            ROS_DEBUG_STREAM("Applied radial Gaussian noise with std=" << gaussian_std);
         }
 
-        // Add outlier noise
+        // Add outlier noise (radial - corrected)
         if (outlier_rate > 0.0f && outlier_std > 0.0f)
         {
             std::normal_distribution<float> outlier_noise(0.0f, outlier_std);
+            const float min_range = 0.1f;
 
             for (auto &point : *result_cloud)
             {
                 if (uniform_dist_(rng_) < outlier_rate)
                 {
-                    point.x += outlier_noise(rng_);
-                    point.y += outlier_noise(rng_);
-                    point.z += outlier_noise(rng_);
+                    // Calculate range
+                    float range = std::sqrt(point.x * point.x + point.y * point.y + point.z * point.z);
+
+                    if (range > 1e-6f)
+                    {
+                        // Generate radial outlier (larger magnitude)
+                        float range_outlier = outlier_noise(rng_);
+                        float new_range = std::max(range + range_outlier, min_range);
+
+                        // Apply along beam direction
+                        float scale = new_range / range;
+                        point.x *= scale;
+                        point.y *= scale;
+                        point.z *= scale;
+                    }
                     ++noise_points_added;
                 }
             }
 
-            ROS_DEBUG_STREAM("Applied outlier noise to " << noise_points_added
-                                                         << " points (rate=" << outlier_rate << ", std=" << outlier_std << ")");
+            ROS_DEBUG_STREAM("Applied radial outlier noise to " << noise_points_added
+                                                                << " points (rate=" << outlier_rate << ", std=" << outlier_std << ")");
         }
 
         return result_cloud;
@@ -531,7 +559,7 @@ namespace lidar_augmentation
     }
 
     // =============================================================================
-    // SPARSE SCAN PATTERN EXACT
+    // SPARSE SCAN PATTERN
     // =============================================================================
 
     template <typename PointT>

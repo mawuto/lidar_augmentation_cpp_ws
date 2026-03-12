@@ -1,0 +1,8 @@
+# Ignore build artifacts — keep image lean
+build/
+devel/
+logs/
+.git/
+*.bag
+*.pyc
+__pycache__/
