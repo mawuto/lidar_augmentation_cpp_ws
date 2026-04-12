@@ -322,7 +322,7 @@ namespace lidar_augmentation
         const std::unordered_map<std::string, std::vector<float>> &original_fields,
         std::unordered_map<std::string, std::vector<float>> &augmented_fields)
     {
-        // IMPROVED: Only preserve timestamp fields that actually exist
+        // Only preserve timestamp fields that actually exist
         const std::vector<std::string> timestamp_fields = {"t", "timestamp"};
 
         for (const std::string &timestamp_field : timestamp_fields)
@@ -337,7 +337,7 @@ namespace lidar_augmentation
                 }
                 else
                 {
-                    // CHANGED: Use DEBUG instead of WARN for expected size mismatches
+                    // Use DEBUG instead of WARN for expected size mismatches
                     ROS_DEBUG_STREAM("Size mismatch for timestamp field " << timestamp_field
                                                                           << ": original=" << original_fields.at(timestamp_field).size()
                                                                           << ", augmented=" << augmented_fields.at(timestamp_field).size()
@@ -346,7 +346,7 @@ namespace lidar_augmentation
             }
             else if (original_fields.count(timestamp_field))
             {
-                // CHANGED: Use DEBUG for missing fields (this is normal for different sensor types)
+                // Use DEBUG for missing fields (this is normal for different sensor types)
                 ROS_DEBUG_STREAM("Timestamp field '" << timestamp_field << "' not present in augmented data");
             }
         }
@@ -392,7 +392,7 @@ namespace lidar_augmentation
         }
         else
         {
-            // CHANGED: Use DEBUG instead of implicit error for missing timestamp fields
+            // Use DEBUG instead of implicit error for missing timestamp fields
             ROS_DEBUG_STREAM("Timestamp field '" << timestamp_field << "' not found in fields (normal for some sensors)");
         }
 
@@ -403,14 +403,14 @@ namespace lidar_augmentation
 
     bool PointCloudProcessor::isValidPoint(const pcl::PointXYZ &point)
     {
-        // EXACT match to Python validation logic
+        // Validation logic
         return std::isfinite(point.x) && std::isfinite(point.y) && std::isfinite(point.z) &&
                !(point.x == 0.0f && point.y == 0.0f && point.z == 0.0f);
     }
 
     sensor_msgs::PointField::_datatype_type PointCloudProcessor::getPointFieldType(const std::string &field_name)
     {
-        // EXACT match to Python field type mappings
+        // Field type mappings
         if (field_name == "x" || field_name == "y" || field_name == "z" || field_name == "intensity")
         {
             return sensor_msgs::PointField::FLOAT32;

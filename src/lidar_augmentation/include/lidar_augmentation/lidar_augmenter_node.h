@@ -9,6 +9,8 @@
 #include <string>
 #include <memory>
 #include <chrono>
+#include <mutex>
+#include <deque>
 #include <yaml-cpp/yaml.h>
 
 #include "point_cloud_processor.h"
@@ -68,7 +70,7 @@ namespace lidar_augmentation
         } motion_distortion;
     };
 
-    // Add statistics data structure
+    //statistics data structure
     struct AugmentationStatistics
     {
         std::string sensor_name;
@@ -141,6 +143,38 @@ namespace lidar_augmentation
         AugmentationParams aug_params_;
         bool use_imu_;
 
+        // =====================================================================
+        // TIME SYNCHRONIZATION BUFFER
+        // Delays all outputs by a fixed amount so that augmented LiDAR scans
+        // and IMU messages are delivered in temporally consistent order.
+        // =====================================================================
+        double sync_delay_sec_ = 0.030; // 30 ms default delay
+
+        struct BufferedIMU
+        {
+            ros::Time wall_receive_time; // wall-clock time when we received this IMU msg
+            sensor_msgs::Imu msg;
+        };
+
+        struct BufferedCloud
+        {
+            ros::Time wall_receive_time; // wall-clock time when original LiDAR msg arrived
+            std::string sensor;
+            sensor_msgs::PointCloud2 augmented_msg;
+        };
+
+        std::deque<BufferedIMU> imu_output_buffer_;
+        std::deque<BufferedCloud> cloud_output_buffer_;
+        std::mutex sync_buffer_mutex_;
+
+        // Delayed IMU republishers
+        std::unordered_map<std::string, ros::Publisher> imu_delayed_publishers_;
+
+        // Timer that flushes the synchronization buffers
+        ros::Timer sync_flush_timer_;
+        void syncFlushCallback(const ros::TimerEvent &event);
+        // =====================================================================
+
         // Methods
         void loadParameters();
         void setupPublishers();
@@ -155,9 +189,10 @@ namespace lidar_augmentation
         template <typename PointT>
         void processPointCloud(const sensor_msgs::PointCloud2::ConstPtr &msg,
                                const std::string &sensor,
-                               const std::string &sensor_type);
+                               const std::string &sensor_type,
+                               const ros::Time &wall_receive_time);
 
-        // Missing utility methods
+        // Utility methods
         void updateFieldsWithMask(
             std::unordered_map<std::string, std::vector<float>> &fields,
             const std::vector<bool> &mask);

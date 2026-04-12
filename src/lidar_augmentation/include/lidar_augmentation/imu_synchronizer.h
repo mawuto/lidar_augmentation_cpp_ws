@@ -34,7 +34,7 @@ namespace lidar_augmentation
         explicit IMUSynchronizer(size_t buffer_size = 1000);
         ~IMUSynchronizer() = default;
 
-        // EXACT match to Python interface
+
         void addIMUMsg(const sensor_msgs::Imu::ConstPtr &msg);
 
         std::optional<IMUData> getMotionAtTimestamp(double timestamp);
@@ -49,7 +49,7 @@ namespace lidar_augmentation
         std::deque<IMUData> imu_buffer_;
         std::optional<IMUData> last_imu_;
 
-        //  ADD MISSING FUNCTION DECLARATIONS
+        // FUNCTION DECLARATIONS
         bool isValidIMUData(const IMUData &imu_data);
         Eigen::Vector3d removeGravity(const Eigen::Vector3d &acceleration);
         void cleanupOldData(double current_time, double max_age_seconds);

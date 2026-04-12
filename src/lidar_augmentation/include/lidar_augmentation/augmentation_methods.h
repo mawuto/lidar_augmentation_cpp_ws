@@ -91,7 +91,7 @@ namespace lidar_augmentation
             typename pcl::PointCloud<PointT>::Ptr &cloud,
             int sparsity_factor = 2);
 
-        // ADDED: Missing utility methods from error analysis
+        // Utility methods from error analysis
         template <typename PointT>
         typename pcl::PointCloud<PointT>::Ptr filterByDistance(
             typename pcl::PointCloud<PointT>::Ptr &cloud,
@@ -117,7 +117,7 @@ namespace lidar_augmentation
         template <typename PointT>
         float calculateElevationAngle(const PointT &point);
 
-        // ADDED: Missing private helper methods
+        // Private helper methods
         template <typename PointT>
         bool isPointInFOV(const PointT &point,
                           float azimuth_min, float azimuth_max,

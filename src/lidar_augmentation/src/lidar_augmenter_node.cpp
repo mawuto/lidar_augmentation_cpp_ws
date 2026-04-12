@@ -43,6 +43,16 @@ namespace lidar_augmentation
         if (use_imu_)
         {
             ROS_INFO_STREAM("IMU synchronization enabled with " << imu_topics_.size() << " topics");
+
+            // Load synchronization delay parameter
+            private_nh_.param<double>("sync_delay", sync_delay_sec_, 0.030);
+            ROS_INFO_STREAM("IMU-LiDAR synchronization delay buffer: "
+                            << sync_delay_sec_ * 1000.0 << " ms");
+
+            // Start timer at 1 kHz to flush delayed output buffers
+            sync_flush_timer_ = nh_.createTimer(
+                ros::Duration(0.001),
+                &LidarAugmenterNode::syncFlushCallback, this);
         }
     }
 
@@ -65,7 +75,7 @@ namespace lidar_augmentation
             ROS_INFO("Statistics publishing DISABLED - use publish_statistics:=true to enable");
         }
 
-        // Method 1: Load from ROS parameters (most flexible)
+        // Method 1: Load from ROS parameters
         XmlRpc::XmlRpcValue input_topics_param;
         if (private_nh_.getParam("input_topics", input_topics_param))
         {
@@ -163,12 +173,12 @@ namespace lidar_augmentation
                 if (input_topics_.empty())
                 {
                     ROS_ERROR("No PointCloud2 topics found after 30 seconds! Please start your rosbag or configure input_topics parameter.");
-                    return; // Or however you handle initialization failure
+                    return;
                 }
             }
         }
 
-        // Load output suffix - completely configurable
+        // Load output suffix
         output_suffix_ = "_augmented";
         private_nh_.param<std::string>("output_suffix", output_suffix_, "_augmented");
 
@@ -178,7 +188,13 @@ namespace lidar_augmentation
 
         imu_topics_.clear();
         use_imu_ = false;
-        private_nh_.param<bool>("use_imu", use_imu_, false);
+        // Read from "use_imu" direct param OR from "imu/enabled" (YAML structure)
+        if (!private_nh_.param<bool>("use_imu", use_imu_, false))
+        {
+            private_nh_.param<bool>("imu/enabled", use_imu_, false);
+        }
+        ROS_INFO_STREAM("IMU usage: " << (use_imu_ ? "ENABLED" : "DISABLED")
+                                      << " (param: use_imu=" << use_imu_ << ")");
 
         if (use_imu_)
         {
@@ -284,7 +300,7 @@ namespace lidar_augmentation
         std::string scenario_name = "moderate";
         private_nh_.param<std::string>("scenario", scenario_name, "moderate");
 
-        // ← FIX: Store active scenario name AFTER loading it
+        // Store active scenario name after loading it
         active_scenario_name_ = scenario_name;
 
         ROS_INFO_STREAM("Loading augmentation scenario: '" << scenario_name << "'");
@@ -617,7 +633,19 @@ namespace lidar_augmentation
 
         ROS_INFO_STREAM("Created " << publishers_.size() << " publishers");
 
-        // Add at the end of setupPublishers() method
+        // Delayed IMU republishers
+        if (use_imu_)
+        {
+            for (const auto &[sensor_name, imu_topic] : imu_topics_)
+            {
+                std::string delayed_imu_topic = imu_topic + output_suffix_;
+                imu_delayed_publishers_[sensor_name] =
+                    nh_.advertise<sensor_msgs::Imu>(delayed_imu_topic, 200);
+                ROS_INFO_STREAM("Delayed IMU publisher: " << sensor_name
+                                                          << " -> " << delayed_imu_topic);
+            }
+        }
+
         if (publish_statistics_)
         {
             stats_publisher_ = nh_.advertise<std_msgs::String>("/lidar_augmentation/statistics", 10);
@@ -639,7 +667,7 @@ namespace lidar_augmentation
             ROS_DEBUG_STREAM("Subscriber created: " << sensor_name << " <- " << input_topic);
         }
 
-        // IMU subscribers (unchanged)
+        // IMU subscribers
         if (use_imu_)
         {
             for (const auto &[sensor_name, imu_topic] : imu_topics_)
@@ -664,6 +692,10 @@ namespace lidar_augmentation
                                                 const std::string &sensor)
 
     {
+
+        // Capture wall-clock arrival time FIRST, before any processing
+        const ros::Time wall_receive_time = ros::Time::now();
+
         auto start_time = std::chrono::high_resolution_clock::now();
 
         try
@@ -677,16 +709,16 @@ namespace lidar_augmentation
             // Process based on detected sensor type
             if (sensor_type == "ouster")
             {
-                processPointCloud<OusterPoint>(msg, sensor, sensor_type);
+                processPointCloud<OusterPoint>(msg, sensor, sensor_type, wall_receive_time);
             }
             else if (sensor_type == "livox_mid360" || sensor_type == "livox_avia")
             {
-                processPointCloud<LivoxPoint>(msg, sensor, sensor_type);
+                processPointCloud<LivoxPoint>(msg, sensor, sensor_type, wall_receive_time);
             }
             else
             {
                 // Generic point cloud processing
-                processPointCloud<pcl::PointXYZI>(msg, sensor, sensor_type);
+                processPointCloud<pcl::PointXYZI>(msg, sensor, sensor_type, wall_receive_time);
             }
 
             // Performance logging
@@ -705,7 +737,8 @@ namespace lidar_augmentation
     template <typename PointT>
     void LidarAugmenterNode::processPointCloud(const sensor_msgs::PointCloud2::ConstPtr &msg,
                                                const std::string &sensor,
-                                               const std::string &sensor_type)
+                                               const std::string &sensor_type,
+                                               const ros::Time &wall_receive_time)
     {
 
         // Extract points and fields
@@ -798,7 +831,7 @@ namespace lidar_augmentation
                 motion_params.linear_velocity.assign(
                     aug_params_.motion_distortion.linear_velocity.begin(),
                     aug_params_.motion_distortion.linear_velocity.end());
-                //  FIX: Also need .assign() for angular_velocity
+                // for angular_velocity
                 motion_params.angular_velocity.assign(
                     aug_params_.motion_distortion.angular_velocity.begin(),
                     aug_params_.motion_distortion.angular_velocity.end());
@@ -844,13 +877,27 @@ namespace lidar_augmentation
         // Preserve original timestamps
         fields = processor_->preserveOriginalTimestamps<PointT>(original_fields, fields);
 
-        // Create and publish augmented message
+        // Create augmented message
         sensor_msgs::PointCloud2 augmented_msg = processor_->createAugmentedMsg<PointT>(
             msg->header, augmented_cloud, fields, msg->fields);
 
-        if (publishers_.count(sensor))
+        // Buffer for delayed synchronized publishing
+        if (use_imu_)
         {
-            publishers_[sensor].publish(augmented_msg);
+            std::lock_guard<std::mutex> lock(sync_buffer_mutex_);
+            BufferedCloud buffered;
+            buffered.wall_receive_time = wall_receive_time;
+            buffered.sensor = sensor;
+            buffered.augmented_msg = augmented_msg;
+            cloud_output_buffer_.push_back(buffered);
+        }
+        else
+        {
+            // No IMU → no sync needed, publish immediately as before
+            if (publishers_.count(sensor))
+            {
+                publishers_[sensor].publish(augmented_msg);
+            }
         }
 
         ROS_DEBUG_STREAM("Published augmented " << sensor << " cloud with "
@@ -869,8 +916,18 @@ namespace lidar_augmentation
     {
         if (use_imu_ && imu_sync_)
         {
+            // Feed IMU synchronizer for motion estimation
             imu_sync_->addIMUMsg(msg);
             ROS_DEBUG_THROTTLE(5.0, "IMU buffer size: %zu", imu_sync_->getBufferSize());
+
+            // Buffer IMU message for delayed republishing
+            {
+                std::lock_guard<std::mutex> lock(sync_buffer_mutex_);
+                BufferedIMU buffered;
+                buffered.wall_receive_time = ros::Time::now();
+                buffered.msg = *msg;
+                imu_output_buffer_.push_back(buffered);
+            }
         }
     }
 
@@ -984,6 +1041,49 @@ namespace lidar_augmentation
         }
     }
 
+    void LidarAugmenterNode::syncFlushCallback(const ros::TimerEvent & /*event*/)
+    {
+        std::lock_guard<std::mutex> lock(sync_buffer_mutex_);
+        ros::Time now = ros::Time::now();
+        ros::Duration delay(sync_delay_sec_);
+
+        // Flush IMU messages that have waited long enough
+        while (!imu_output_buffer_.empty())
+        {
+            auto &front = imu_output_buffer_.front();
+            if ((now - front.wall_receive_time) >= delay)
+            {
+                for (auto &[sensor_name, pub] : imu_delayed_publishers_)
+                {
+                    pub.publish(front.msg);
+                }
+                imu_output_buffer_.pop_front();
+            }
+            else
+            {
+                break; // remaining messages are newer, wait
+            }
+        }
+
+        // Flush augmented LiDAR messages that have waited long enough
+        while (!cloud_output_buffer_.empty())
+        {
+            auto &front = cloud_output_buffer_.front();
+            if ((now - front.wall_receive_time) >= delay)
+            {
+                if (publishers_.count(front.sensor))
+                {
+                    publishers_[front.sensor].publish(front.augmented_msg);
+                }
+                cloud_output_buffer_.pop_front();
+            }
+            else
+            {
+                break; // remaining messages are newer, wait
+            }
+        }
+    }
+
     void LidarAugmenterNode::run()
     {
         ROS_INFO("LiDAR Augmenter Node is running...");
@@ -995,15 +1095,15 @@ namespace lidar_augmentation
         ROS_INFO("LiDAR Augmenter Node shutting down");
     }
 
-    // Explicit template instantiations for all methods that need them
+    // Explicit template instantiations for all methods
     template void LidarAugmenterNode::processPointCloud<OusterPoint>(
-        const sensor_msgs::PointCloud2::ConstPtr &, const std::string &, const std::string &);
+        const sensor_msgs::PointCloud2::ConstPtr &, const std::string &, const std::string &, const ros::Time &);
 
     template void LidarAugmenterNode::processPointCloud<LivoxPoint>(
-        const sensor_msgs::PointCloud2::ConstPtr &, const std::string &, const std::string &);
+        const sensor_msgs::PointCloud2::ConstPtr &, const std::string &, const std::string &, const ros::Time &);
 
     template void LidarAugmenterNode::processPointCloud<pcl::PointXYZI>(
-        const sensor_msgs::PointCloud2::ConstPtr &, const std::string &, const std::string &);
+        const sensor_msgs::PointCloud2::ConstPtr &, const std::string &, const std::string &, const ros::Time &);
 
     template void LidarAugmenterNode::updateFieldsWithCloud<OusterPoint>(
         std::unordered_map<std::string, std::vector<float>> &, const pcl::PointCloud<OusterPoint>::Ptr &);
@@ -1043,7 +1143,7 @@ namespace lidar_augmentation
         const std::string &sensor_type,
         const std::chrono::milliseconds &processing_time)
     {
-        // THROTTLING CHECK
+        // THROTTLING
         ros::Time now = ros::Time::now();
 
         // Check if enough time has passed since last statistics publish for this sensor
@@ -1057,7 +1157,6 @@ namespace lidar_augmentation
 
         // Update last publish time
         last_time = now;
-
 
         ROS_INFO_STREAM("Publishing statistics for sensor: " << sensor
                                                              << " | Original Points: " << original_msg->width

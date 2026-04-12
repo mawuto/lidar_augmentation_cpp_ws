@@ -97,7 +97,7 @@ namespace lidar_augmentation
             return std::make_tuple(result_cloud, mask);
         }
 
-        // EXACT match to Python structured dropout patterns
+        // Structured dropout patterns
         if (pattern == "ring" || pattern == "line")
         {
             // Ring-based dropout for Ouster, line-based for Livox
@@ -285,7 +285,7 @@ namespace lidar_augmentation
 
         size_t noise_points_added = 0;
 
-        // Apply Gaussian noise (radial - corrected)
+        // Apply Gaussian noise (radial)
         if (gaussian_std > 0.0f)
         {
             std::normal_distribution<float> gaussian_noise(0.0f, gaussian_std);
@@ -315,7 +315,7 @@ namespace lidar_augmentation
             ROS_DEBUG_STREAM("Applied radial Gaussian noise with std=" << gaussian_std);
         }
 
-        // Add outlier noise (radial - corrected)
+        // Add outlier noise (radial)
         if (outlier_rate > 0.0f && outlier_std > 0.0f)
         {
             std::normal_distribution<float> outlier_noise(0.0f, outlier_std);
