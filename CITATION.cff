@@ -1,36 +1,49 @@
 cff-version: 1.2.0
-message: "If you use this software or build upon this LiDAR augmentation framework, please cite the associated article."
+message: "If you use this software, please cite the associated publication."
 type: software
 
 title: "LiDAR Augmentation Framework for SLAM Robustness Evaluation"
-version: "0.1.0"
+version: "1.0.0"
 
 authors:
-  - family-names: "Doumegna"
-    given-names: "Mawuto Koudjo Felix"
-    affiliation: "Fudan University / University of Turku"
-  - family-names: "Yu"
-    given-names: "Xianjia"
-  - family-names: "Zou"
-    given-names: "Zhuo"
-  - family-names: "Westerlund"
-    given-names: "Tomi"
+
+* family-names: "Doumegna"
+  given-names: "Mawuto Koudjo Felix"
+  affiliation: "Fudan University; University of Turku"
+
+* family-names: "Yu"
+  given-names: "Xianjia"
+
+* family-names: "Zou"
+  given-names: "Zhuo"
+
+* family-names: "Westerlund"
+  given-names: "Tomi"
 
 repository-code: "https://github.com/mawuto/lidar_augmentation_cpp_ws"
 license: "MIT"
 
-references:
-  - type: article
-    title: "A Sensor-Aware Phenomenological Framework for LiDAR Degradation Simulation and SLAM Robustness Evaluation"
-    journal: "IEEE Robotics and Automation Practice"
-    year: 2026
-    authors:
-      - family-names: "Doumegna"
-        given-names: "Mawuto Koudjo Felix"
-      - family-names: "Yu"
-        given-names: "Xianjia"
-      - family-names: "Zou"
-        given-names: "Zhuo"
-      - family-names: "Westerlund"
-        given-names: "Tomi"
-    note: "Accepted for publication; DOI pending."
+preferred-citation:
+type: article
+title: "A Sensor-Aware Phenomenological Framework for LiDAR Degradation Simulation and SLAM Robustness Evaluation"
+journal: "IEEE Robotics and Automation Practice"
+year: 2026
+volume: 1
+start: 86
+end: 91
+doi: "10.1109/RAP.2026.3684773"
+
+authors:
+- family-names: "Doumegna"
+given-names: "Mawuto Koudjo Felix"
+
+```
+- family-names: "Yu"
+  given-names: "Xianjia"
+
+- family-names: "Zou"
+  given-names: "Zhuo"
+
+- family-names: "Westerlund"
+  given-names: "Tomi"
+```

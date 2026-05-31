@@ -405,6 +405,24 @@ catkin_test_results build
 ```
 (Primary benchmarking/metrics are produced through the dataset pipeline above, not via gtests.)
 
+
+## 📖 Citation
+
+If you use this framework in your research, please cite:
+
+```bibtex
+@article{doumegna2026sensoraware,
+  author={Doumegna, Mawuto Koudjo Felix and Yu, Xianjia and Zou, Zhuo and Westerlund, Tomi},
+  title={A Sensor-Aware Phenomenological Framework for LiDAR Degradation Simulation and SLAM Robustness Evaluation},
+  journal={IEEE Robotics and Automation Practice},
+  volume={1},
+  pages={86--91},
+  year={2026},
+  doi={10.1109/RAP.2026.3684773}
+}
+
+---
+
 ### 📊 APE Results Across Severity Levels
 
 The following table summarizes APE (mean ± std, in meters) for  
