@@ -279,6 +279,25 @@ roslaunch lidar_augmentation rosbag_augmentation.launch \
     debug:=false  
 ```
 
+## 📖 Citation
+
+This repository accompanies the following publication:
+
+> **M. K. F. Doumegna, X. Yu, Z. Zou, and T. Westerlund**
+>
+> *A Sensor-Aware Phenomenological Framework for LiDAR Degradation Simulation and SLAM Robustness Evaluation*
+>
+> IEEE Robotics and Automation Practice (RA-P), vol. 1, pp. 86–91, 2026.
+>
+> DOI: 10.1109/RAP.2026.3684773
+
+If you use this framework in your research, please cite the above publication.
+
+For BibTeX and citation metadata, see `CITATION.cff`.
+
+---
+
+
 ## 📄 Reproducing the RA-P Experiments
 
 To reproduce the experiments reported in the paper:
